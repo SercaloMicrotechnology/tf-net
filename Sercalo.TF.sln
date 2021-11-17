@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sercalo.TF", "Sercalo.TF\Sercalo.TF.csproj", "{624BE2C6-5018-41F6-BDCB-E0E1A180B9DD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E65259AB-4DA6-478F-8A53-993BD903B5C5}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{624BE2C6-5018-41F6-BDCB-E0E1A180B9DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{624BE2C6-5018-41F6-BDCB-E0E1A180B9DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{624BE2C6-5018-41F6-BDCB-E0E1A180B9DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{624BE2C6-5018-41F6-BDCB-E0E1A180B9DD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C84E5903-187A-4A1C-BE46-F13E42FE81A4}
+	EndGlobalSection
+EndGlobal
