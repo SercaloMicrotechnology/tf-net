@@ -1,7 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Sercalo</Authors>
+    <Company>Sercalo Microtechnolog Ltd</Company>
+    <Product>Sercalo Tunable Filter Library</Product>
+    <Description>Library to communicate with Sercalo Tunable Filter TF products</Description>
+    <Copyright>2021</Copyright>
+    <PackageProjectUrl>https://www.sercalo.com/products/tunable-filters</PackageProjectUrl>
+    <PackageTags>sercalo tf</PackageTags>
+    <RepositoryType />
+    <RepositoryUrl>https://gitlab.sercalo.com/tf/net</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <SignAssembly>false</SignAssembly>
+    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
