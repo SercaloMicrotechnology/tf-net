@@ -32,7 +32,7 @@ job:test:
   dependencies:
     - job:build
 
-deploy_job:
+job:deploy:
   stage: deploy
   tags:
       - .net
