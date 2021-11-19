@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Sercalo.TF
 {
-    public record TunableFilterID
+    public class TunableFilterID
     {
         /// <summary>
         /// Gets the name of the product.
@@ -15,21 +15,21 @@ namespace Sercalo.TF
         /// <value>
         /// The name of the product.
         /// </value>
-        public string ProductName { get; init; }
+        public string ProductName { get; private set; }
         /// <summary>
         /// Gets the serial number.
         /// </summary>
         /// <value>
         /// The serial number.
         /// </value>
-        public string SerialNumber { get; init; }
+        public string SerialNumber { get; private set; }
         /// <summary>
         /// Gets the firmware version.
         /// </summary>
         /// <value>
         /// The firmware version.
         /// </value>
-        public string FirmwareVersion { get; init; }
+        public string FirmwareVersion { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TunableFilterID"/> class.

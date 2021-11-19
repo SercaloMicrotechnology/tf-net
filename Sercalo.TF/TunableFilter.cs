@@ -256,7 +256,11 @@ namespace Sercalo.TF
         /// <param name="wavelength">The wavelength.</param>
         /// <returns></returns>
         public async Task<bool> SetWavelength(double wavelength)
-            => await SetDouble("WVL", wavelength);
+        { 
+            bool result = await SetDouble("WVL", wavelength);
+            await SleepLockAsync(1);
+            return result;
+        }
 
         /// <summary>
         /// Gets the minimum selectable wavelength.
