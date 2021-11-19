@@ -166,11 +166,8 @@ namespace Sercalo.Serial
                 return LockFunction(() =>
                 {
                     DiscardBuffers();
-                    Console.WriteLine(input);
                     _port.WriteLine(input);
-                    string output = _port.ReadLine();
-                    Console.WriteLine(output);
-                    return output;
+                    return _port.ReadLine();
                 });
             }
             catch (Exception err)
