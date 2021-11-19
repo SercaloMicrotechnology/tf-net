@@ -1,0 +1,47 @@
+# Sercalo Microtechnology Ltd
+
+stages:
+  - build
+  - test
+  - deploy
+
+job:build:
+  stage: build
+  tags:
+    - .net
+  script:
+    - dotnet restore
+    - dotnet build "Sercalo.TF/Sercalo.TF.csproj" -c Release
+  artifacts:
+    expire_in: 1 day
+
+job:test:
+  stage: test
+  tags:
+      - .net
+  script: 
+    - 'dotnet test --test-adapter-path:. --logger:"junit;LogFilePath=..\artifacts\{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"'
+  artifacts:
+    when: always
+    expire_in: 1 day  # save gitlab server space, we copy the files we need to deploy folder later on
+    paths: 
+     - ./**/*test-result.xml
+    reports:
+      junit: 
+       - ./**/*test-result.xml
+  dependencies:
+    - job:build
+
+deploy_job:
+  stage: deploy
+  tags:
+      - .net
+  only:
+    - tags
+    - main
+  script:
+    - dotnet pack "Sercalo.TF/Sercalo.TF.csproj" -c Release --output "bin/Package/"
+    - dotnet nuget push "bin\Package\*.nupkg" --api-key ${NUGET_API_KEY} --source https://api.nuget.org/v3/index.json
+  dependencies:
+    - job:build
+    - job:test
