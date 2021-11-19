@@ -20,7 +20,7 @@ job:test:
   tags:
       - .net
   script: 
-    - dotnet test --logger:"junit;LogFilePath=..\artifacts\{assembly}-test-result.xml;"
+    - dotnet test --configuration:"Release" --logger:"junit;LogFilePath=..\artifacts\{assembly}-test-result.xml;"
   artifacts:
     when: always
     expire_in: 1 day  # save gitlab server space, we copy the files we need to deploy folder later on
