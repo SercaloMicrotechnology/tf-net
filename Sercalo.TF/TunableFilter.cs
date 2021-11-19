@@ -340,7 +340,7 @@ namespace Sercalo.TF
         /// <param name="function">The function.</param>
         /// <returns></returns>
         private async Task<double> GetDouble(string function)
-            => double.Parse(await GetValue(function));
+            => double.Parse(await GetValue(function), System.Globalization.CultureInfo.InvariantCulture);
 
         /// <summary>
         /// Sets the value in double from its function
@@ -349,7 +349,7 @@ namespace Sercalo.TF
         /// <param name="value">The value.</param>
         /// <returns></returns>
         private async Task<bool> SetDouble(string function, double value)
-            => await SetValue(function, value.ToString("F3"));
+            => await SetValue(function, value.ToString("F3", System.Globalization.CultureInfo.InvariantCulture));
 
         /// <summary>
         /// Gets the value in byte from its function
@@ -357,7 +357,7 @@ namespace Sercalo.TF
         /// <param name="function">The function.</param>
         /// <returns></returns>
         private async Task<byte> GetByte(string function)
-            => byte.Parse(await GetValue(function));
+            => byte.Parse(await GetValue(function), System.Globalization.CultureInfo.InvariantCulture);
 
         /// <summary>
         /// Sets the value in byte from its function
@@ -366,7 +366,7 @@ namespace Sercalo.TF
         /// <param name="value">The value.</param>
         /// <returns></returns>
         private async Task<bool> SetByte(string function, byte value)
-            => await SetValue(function, value.ToString());
+            => await SetValue(function, value.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
         /// <summary>
         /// Convert a String to point.
@@ -393,7 +393,7 @@ namespace Sercalo.TF
             (int x_neg, int x_pos) = GetElectrodeValues(point.X);
             (int y_neg, int y_pos) = GetElectrodeValues(point.Y);
 
-            return string.Format("{0} {1} {2} {3}", x_neg, x_pos, y_neg, y_pos);
+            return string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0} {1} {2} {3}", x_neg, x_pos, y_neg, y_pos);
         }
 
         /// <summary>
@@ -426,7 +426,7 @@ namespace Sercalo.TF
                 && value > 0)
                 return -value;
 
-            int.TryParse(pos, out value);
+            value = int.Parse(pos, System.Globalization.CultureInfo.InvariantCulture);
 
             return value;
         }
