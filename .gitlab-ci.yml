@@ -42,7 +42,7 @@ job:deploy:
     - branches
   script:
     - dotnet pack "Sercalo.TF/Sercalo.TF.csproj" -c Release --output "bin/Package/"
-    - dotnet nuget push "bin\Package\*.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json
+    - dotnet nuget push "bin\Package\*.nupkg" --api-key %NUGET_API_KEY% --source https://api.nuget.org/v3/index.json
   dependencies:
     - job:build
     - job:test
