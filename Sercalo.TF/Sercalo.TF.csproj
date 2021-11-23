@@ -10,11 +10,11 @@
     <PackageProjectUrl>https://www.sercalo.com/products/tunable-filters</PackageProjectUrl>
     <PackageTags>sercalo tf</PackageTags>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://gitlab.sercalo.com/tf/net</RepositoryUrl>
+    <RepositoryUrl>https://github.com/SercaloMicrotechnology/tf-net</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <SignAssembly>false</SignAssembly>
-    <Version>1.0.1</Version>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
