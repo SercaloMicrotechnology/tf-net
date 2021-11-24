@@ -55,8 +55,8 @@ namespace Sercalo.TF
             if (str != "RST")
                 throw new TunableFilterException("Cannot reset the device");
 
-            _port.BaudRate = DEFAULT_BAUDRATE;
-            _port.Parity = DEFAULT_PARITY;
+            Port.BaudRate = DEFAULT_BAUDRATE;
+            Port.Parity = DEFAULT_PARITY;
 
             await SleepLockAsync(1000);
 
@@ -143,7 +143,7 @@ namespace Sercalo.TF
 
             ThrowIfError((await ReadAllAsync()).TrimEnd(trimChars));
 
-            _port.BaudRate = uartValues[baudrate];
+            Port.BaudRate = uartValues[baudrate];
 
             return input == await QueryAsync(input);
         }
@@ -183,7 +183,7 @@ namespace Sercalo.TF
             await SleepLockAsync(200);
 
             ThrowIfError((await ReadAllAsync()).TrimEnd(trimChars));
-            _port.Parity = parity;
+            Port.Parity = parity;
 
             return input == await QueryAsync(input);
         }

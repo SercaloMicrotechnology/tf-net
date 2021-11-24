@@ -13,12 +13,19 @@ namespace Sercalo.Serial
     {
         #region VARIABLES
 
-        protected SerialPort _port;
         Mutex _lock = new Mutex(false, "SerialDeviceMutex");
 
         #endregion
 
         #region PROPERTIES
+
+        /// <summary>
+        /// Gets the serial port used for this instance. 
+        /// </summary>
+        /// <remarks>
+        /// The port is managed by the SerialDevice instance. Properties like baudrate, partiy and so could be requested for information but should not be changed.
+        /// </remarks>
+        public SerialPort Port { get; private set; }
 
         /// <summary>
         /// Gets or sets the thread safe lock timout (in milliseconds) used to restrain access to the serial port interface in multi-threaded instance
@@ -34,7 +41,7 @@ namespace Sercalo.Serial
         /// <value>
         ///   <c>true</c> if this instance is open; otherwise, <c>false</c>.
         /// </value>
-        public bool IsOpen => _port.IsOpen;
+        public bool IsOpen => Port.IsOpen;
 
         #endregion
 
@@ -42,10 +49,10 @@ namespace Sercalo.Serial
 
         public SerialDevice(int baudRate = 9600, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One)
         {
-            _port = new SerialPort("COM1", baudRate, parity, dataBits, stopBits);
-            _port.NewLine = "\r\n";
-            _port.ReadTimeout = 5000;
-            _port.WriteTimeout = 5000;
+            Port = new SerialPort("COM1", baudRate, parity, dataBits, stopBits);
+            Port.NewLine = "\r\n";
+            Port.ReadTimeout = 5000;
+            Port.WriteTimeout = 5000;
         }
 
         /// <summary>
@@ -59,9 +66,9 @@ namespace Sercalo.Serial
             {
                 return LockFunction(() =>
                 {
-                    _port.PortName = portName;
-                    _port.Open();
-                    return _port.IsOpen;
+                    Port.PortName = portName;
+                    Port.Open();
+                    return Port.IsOpen;
                 });
             }
             catch (Exception err)
@@ -100,11 +107,11 @@ namespace Sercalo.Serial
         /// </summary>
         public void Close()
         {
-            if (_port.IsOpen)
+            if (Port.IsOpen)
             {
                 LockFunction(() =>
                 {
-                    _port.Close();
+                    Port.Close();
                 });
             }
         }
@@ -129,7 +136,7 @@ namespace Sercalo.Serial
                 LockFunction(() =>
                 {
                     DiscardBuffers();
-                    _port.WriteLine(input);
+                    Port.WriteLine(input);
                 });
             }
             catch (Exception err)
@@ -166,8 +173,8 @@ namespace Sercalo.Serial
                 return LockFunction(() =>
                 {
                     DiscardBuffers();
-                    _port.WriteLine(input);
-                    return _port.ReadLine();
+                    Port.WriteLine(input);
+                    return Port.ReadLine();
                 });
             }
             catch (Exception err)
@@ -214,10 +221,10 @@ namespace Sercalo.Serial
 
                     do
                     {
-                        output += _port.ReadExisting();
+                        output += Port.ReadExisting();
                         Thread.Sleep(1);
                     }
-                    while (_port.BytesToRead > 0);
+                    while (Port.BytesToRead > 0);
 
                     return output;
                 });
@@ -312,8 +319,8 @@ namespace Sercalo.Serial
         /// <returns></returns>
         private void DiscardBuffers()
         {
-            _port.DiscardOutBuffer();
-            _port.DiscardInBuffer();
+            Port.DiscardOutBuffer();
+            Port.DiscardInBuffer();
         }
 
         #endregion

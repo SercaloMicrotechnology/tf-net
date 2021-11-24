@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,14 @@ namespace Sercalo.Serial
     /// </summary>
     public interface ISerialDevice: IDisposable
     {
+        /// <summary>
+        /// Gets the serial port used for this instance. 
+        /// </summary>
+        /// <remarks>
+        /// The port is managed by the SerialDevice instance. Properties like baudrate, partiy and so could be requested for information but should not be changed.
+        /// </remarks>
+        SerialPort Port { get; }
+
         /// <summary>
         /// Gets or sets the thread safe lock timout (in milliseconds) used to restrain access to the serial port interface in multi-threaded instance
         /// </summary>
