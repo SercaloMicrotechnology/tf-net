@@ -64,22 +64,17 @@ namespace Sercalo.Serial
         {
             try
             {
-                return LockFunction(() =>
+                return LockFunction(p =>
                 {
-                    Port.PortName = portName;
-                    Port.Open();
-                    return Port.IsOpen;
+                    p.PortName = portName;
+                    p.Open();
+                    return p.IsOpen;
                 });
             }
             catch (Exception err)
             {
                 throw new SercaloException($"Cannot open the device with specified port '{portName}'.", err);
             }
-        }
-
-        public async Task<bool> OpenAsync(string portName)
-        {
-            return await Task.Run(() => Open(portName));
         }
 
         #endregion
@@ -109,9 +104,9 @@ namespace Sercalo.Serial
         {
             if (Port.IsOpen)
             {
-                LockFunction(() =>
+                LockFunction(p =>
                 {
-                    Port.Close();
+                    p.Close();
                 });
             }
         }
@@ -121,169 +116,20 @@ namespace Sercalo.Serial
         #region PUBLIC FUNCTIONS
 
         /// <summary>
-        /// Writes the specified input.
-        /// </summary>
-        /// <param name="input">The sent message.</param>
-        /// <returns></returns>
-        /// <exception cref="Sercalo.SercaloException">$"Cannot write input '{input}'., err</exception>
-        public void Write(string input)
-        {
-            try
-            {
-                if (!IsOpen)
-                    throw new SercaloException("Device is not connected");
-
-                LockFunction(() =>
-                {
-                    DiscardBuffers();
-                    Port.WriteLine(input);
-                });
-            }
-            catch (Exception err)
-            {
-                throw new Sercalo.SercaloException($"Cannot write input '{input}'.", err);
-            }
-        }
-
-        /// <summary>
-        /// Writes the specified input asynchronoulsy.
-        /// </summary>
-        /// <param name="input">The sent message.</param>
-        /// <returns></returns>
-        public async Task WriteAsync(string input)
-        {
-            await Task.Run(() => Write(input));
-        }
-
-        /// <summary>
-        /// Send the specified input and wait for an output
-        /// </summary>
-        /// <param name="input">The sent message</param>
-        /// <returns>
-        /// The received message.
-        /// </returns>
-        /// <exception cref="Sercalo.SercaloException">Cannot get response from input '{input}'.</exception>
-        public string Query(string input)
-        {
-            try
-            {
-                if (!IsOpen)
-                    throw new SercaloException("Device is not connected");
-
-                return LockFunction(() =>
-                {
-                    DiscardBuffers();
-                    Port.WriteLine(input);
-                    return Port.ReadLine();
-                });
-            }
-            catch (Exception err)
-            {
-                throw new Sercalo.SercaloException($"Cannot get response from input '{input}'.", err);
-            }
-        }
-
-        /// <summary>
-        /// Send the specified input and wait for an output asynchronously
-        /// </summary>
-        /// <param name="input">The sent message.</param>
-        /// <returns>
-        /// The received message
-        /// </returns>
-        public async Task<string> QueryAsync(string input)
-        {
-            return await Task.Run(() => Query(input));
-        }
-
-        #endregion
-
-        #region PROTECTED FUNCTIONS
-
-        /// <summary>
-        /// Reads all available data
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="Sercalo.SercaloException">
-        /// Device is not connected
-        /// or
-        /// Cannot get response
-        /// </exception>
-        protected string ReadAll()
-        {
-            try
-            {
-                if (!IsOpen)
-                    throw new SercaloException("Device is not connected");
-
-                return LockFunction(() =>
-                {
-                    string output = "";
-
-                    do
-                    {
-                        output += Port.ReadExisting();
-                        Thread.Sleep(1);
-                    }
-                    while (Port.BytesToRead > 0);
-
-                    return output;
-                });
-            }
-            catch (Exception err)
-            {
-                throw new Sercalo.SercaloException($"Cannot get response", err);
-            }
-        }
-
-        /// <summary>
-        /// Reads all available data asynchronously
-        /// </summary>
-        /// <param name="input">The sent message.</param>
-        /// <returns>
-        /// The received message
-        /// </returns>
-        public async Task<string> ReadAllAsync()
-        {
-            return await Task.Run(() => ReadAll());
-        }
-
-        /// <summary>
-        /// Lock the device read/write and Suspend the current thread for the specified number of milliseconds
-        /// </summary>
-        /// <param name="millisecondsTimeout">The milliseconds timeout.</param>
-        protected void SleepLock(int millisecondsTimeout)
-        {
-            LockFunction(() => System.Threading.Thread.Sleep(millisecondsTimeout));
-        }
-
-        /// <summary>
-        /// Lock the device read/write and Suspend an asynchronous thread for the specified number of milliseconds
-        /// </summary>
-        /// <param name="millisecondsTimeout">The milliseconds timeout.</param>
-        protected async Task SleepLockAsync(int millisecondsTimeout)
-        {
-            await Task.Run(() => SleepLock(millisecondsTimeout));
-        }
-
-        #endregion
-
-        #region PRIVATE FUNCTIONS
-
-        /// <summary>
         /// Locks the specified function for thread-safe instance
         /// </summary>
         /// <typeparam name="T">The return type</typeparam>
         /// <param name="func">The function to lock</param>
         /// <returns>The function results</returns>
         /// <exception cref="System.TimeoutException">A thread-safe lock request failed to gain access.</exception>
-        private T LockFunction<T>(Func<T> func)
+        public T LockFunction<T>(Func<SerialPort, T> func)
         {
-            if (!_lock.WaitOne(1000))
+            if (!_lock.WaitOne(ThreadSafeLockTimout))
                 throw new TimeoutException("A thread-safe lock request failed to gain access.");
 
             try
             {
-                return func();
+                return func(Port);
             }
             catch { throw; }
             finally
@@ -297,30 +143,20 @@ namespace Sercalo.Serial
         /// </summary>
         /// <param name="func">The function to lock</param>
         /// <exception cref="System.TimeoutException">A thread-safe lock request failed to gain access.</exception>
-        private void LockFunction(Action func)
+        public void LockFunction(Action<SerialPort> func)
         {
-            if (!_lock.WaitOne(1000))
+            if (!_lock.WaitOne(ThreadSafeLockTimout))
                 throw new TimeoutException("A thread-safe lock request failed to gain access.");
 
             try
             {
-                func();
+                func(Port);
             }
             catch { throw; }
             finally
             {
                 _lock.ReleaseMutex();
             }
-        }
-
-        /// <summary>
-        /// Discards read/write buffers.
-        /// </summary>
-        /// <returns></returns>
-        private void DiscardBuffers()
-        {
-            Port.DiscardOutBuffer();
-            Port.DiscardInBuffer();
         }
 
         #endregion

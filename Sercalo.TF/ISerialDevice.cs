@@ -44,29 +44,24 @@ namespace Sercalo.Serial
         bool Open(string portName);
 
         /// <summary>
-        /// Opens this communication instance asynchronously
-        /// </summary>
-        /// <param name="portName">Name of the port.</param>
-        /// <returns><c>true</c> if this instance is open; otherwise, <c>false</c>.</returns>
-        Task<bool> OpenAsync(string portName);
-
-        /// <summary>
         /// Closes this communication instance.
         /// </summary>
         void Close();
 
         /// <summary>
-        /// Send the specified input and wait for an output
+        /// Locks the specified function for thread-safe instance to avoid multiple Serial call to the device.
+        /// The specified function will wait until all other locked function finished or if the ThreadSafeLockTimout is raised.
         /// </summary>
-        /// <param name="input">The sent message</param>
-        /// <returns>The received message.</returns>
-        string Query(string input);
+        /// <typeparam name="T">The return type</typeparam>
+        /// <param name="func">The function to lock</param>
+        /// <returns>The function results</returns>
+        T LockFunction<T>(Func<SerialPort, T> func);
 
         /// <summary>
-        /// Send the specified input and wait for an output asynchronously
+        /// Locks the specified function for thread-safe instance to avoid multiple Serial call to the device.
+        /// The specified function will wait until all other locked function finished or if the ThreadSafeLockTimout is raised.
         /// </summary>
-        /// <param name="input">The sent message.</param>
-        /// <returns>The received message</returns>
-        Task<string> QueryAsync(string input);
+        /// <param name="func">The function to lock</param>
+        void LockFunction(Action<SerialPort> func);
     }
 }
