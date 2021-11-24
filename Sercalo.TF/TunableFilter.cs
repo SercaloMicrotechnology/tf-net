@@ -16,13 +16,13 @@ namespace Sercalo.TF
 
         const string REGEX_DEFAULT_VALUE = "val";
 
-        private static int[] uartValues = new int[] { 9600, 19200, 38400, 57600, 115200 };
-        private static int DEFAULT_BAUDRATE = uartValues[0];
+        private static readonly int[] uartValues = new int[] { 9600, 19200, 38400, 57600, 115200 };
+        public static readonly int DEFAULT_BAUDRATE = uartValues[0];
 
-        private static Parity[] uartParities = new Parity[] { Parity.None, Parity.Even, Parity.Odd, Parity.Mark, Parity.Space };
-        private static Parity DEFAULT_PARITY = uartParities[0];
+        private static readonly Parity[] uartParities = new Parity[] { Parity.None, Parity.Even, Parity.Odd, Parity.Mark, Parity.Space };
+        public static readonly Parity DEFAULT_PARITY = uartParities[0];
 
-        private static char[] trimChars = new char[] { '\r', '\n', '\0' };
+        private static readonly char[] trimChars = new char[] { '\r', '\n', '\0' };
 
         #endregion
 
