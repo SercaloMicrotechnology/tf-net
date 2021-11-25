@@ -4,6 +4,7 @@ using Sercalo.TF;
 using System.Threading.Tasks;
 using Sercalo.TF.UnitTests.Attributes;
 using System.Drawing;
+using Sercalo.Serial.Query;
 
 namespace Sercalo.TF.UnitTests
 {
