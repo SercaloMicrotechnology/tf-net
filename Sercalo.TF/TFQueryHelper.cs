@@ -5,10 +5,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Sercalo.Serial.Query;
+using CI = System.Globalization.CultureInfo;
 
 namespace Sercalo.TF.Query
 {
-    internal static class TFQueryHelper
+    public static class TFQueryHelper
     {
         #region CONSTANTS
 
@@ -24,7 +25,7 @@ namespace Sercalo.TF.Query
         /// </summary>
         /// <param name="function">The function.</param>
         /// <returns></returns>
-        public static async Task<string> GetValue(this ITunableFilter device, string function)
+        public static async Task<string> GetStringValue(this ITunableFilter device, string function)
             => await QueryAndMatchAsync(device, function, $"^{function} (?<{REGEX_DEFAULT_VALUE}>.+)$");
 
         /// <summary>
@@ -33,44 +34,10 @@ namespace Sercalo.TF.Query
         /// <param name="function">The function.</param>
         /// <param name="value">The value.</param>
         /// <returns></returns>
-        public static async Task<bool> SetValue(this ITunableFilter device, string function, string value)
+        public static async Task<bool> SetStringValue(this ITunableFilter device, string function, string value)
         {
             return value == await QueryAndMatchAsync(device, $"{function} {value}", $"^{function} (?<{REGEX_DEFAULT_VALUE}>.+)$");
         }
-
-        /// <summary>
-        /// Gets the value in double from its function
-        /// </summary>
-        /// <param name="function">The function.</param>
-        /// <returns></returns>
-        public static async Task<double> GetDouble(this ITunableFilter device, string function)
-            => double.Parse(await GetValue(device, function), System.Globalization.CultureInfo.InvariantCulture);
-
-        /// <summary>
-        /// Sets the value in double from its function
-        /// </summary>
-        /// <param name="function">The function.</param>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        public static async Task<bool> SetDouble(this ITunableFilter device, string function, double value)
-            => await SetValue(device, function, value.ToString("F3", System.Globalization.CultureInfo.InvariantCulture));
-
-        /// <summary>
-        /// Gets the value in byte from its function
-        /// </summary>
-        /// <param name="function">The function.</param>
-        /// <returns></returns>
-        public static async Task<byte> GetByte(this ITunableFilter device, string function)
-            => byte.Parse(await GetValue(device, function), System.Globalization.CultureInfo.InvariantCulture);
-
-        /// <summary>
-        /// Sets the value in byte from its function
-        /// </summary>
-        /// <param name="function">The function.</param>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        public static async Task<bool> SetByte(this ITunableFilter device, string function, byte value)
-            => await SetValue(device, function, value.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
         /// <summary>
         /// Gets the value in byte from its function
@@ -78,7 +45,7 @@ namespace Sercalo.TF.Query
         /// <param name="function">The function.</param>
         /// <returns></returns>
         public static async Task<Point> GetXY(this ITunableFilter device, string function)
-            => StringToPoint(await GetValue(device, function));
+            => StringToPoint(await GetStringValue(device, function));
 
         /// <summary>
         /// Sets the value in byte from its function
@@ -87,7 +54,36 @@ namespace Sercalo.TF.Query
         /// <param name="value">The value.</param>
         /// <returns></returns>
         public static async Task<bool> SetXY(this ITunableFilter device, string function, Point value)
-            => await SetValue(device, function, PointToString(value));
+            => await SetStringValue(device, function, PointToString(value));
+
+        /// <summary>
+        /// Gets the value in byte from its function
+        /// </summary>
+        /// <param name="function">The function.</param>
+        /// <returns></returns>
+        public static async Task<T> GetValue<T>(this ITunableFilter device, string function) where T : IConvertible
+            => (T)Convert.ChangeType(await GetStringValue(device, function), typeof(T), CI.InvariantCulture);
+
+        /// <summary>
+        /// Sets the value in byte from its function
+        /// </summary>
+        /// <param name="function">The function.</param>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        public static async Task<bool> SetValue<T>(this ITunableFilter device, string function, T value) where T : IConvertible
+        {
+            string str;
+
+            switch (Convert.GetTypeCode(value))
+            {
+                case TypeCode.Decimal: 
+                case TypeCode.Single:
+                case TypeCode.Double: str = value.ToDouble(CI.InvariantCulture).ToString("F3", CI.InvariantCulture); break;
+                default: str = (string)Convert.ChangeType(value, TypeCode.String, CI.InvariantCulture); break;
+            }
+
+            return await SetStringValue(device, function, str);
+        }
 
         /// <summary>
         /// Approves the result or throw an exception summarizing the error

@@ -73,7 +73,7 @@ namespace Sercalo.TF
         /// </summary>
         /// <returns></returns>
         public async Task<PowerMode> GetPowerMode()
-            => (PowerMode)(await this.GetByte("POW"));
+            => (PowerMode)(await this.GetValue<byte>("POW"));
 
         /// <summary>
         /// Sets the power mode.
@@ -81,7 +81,7 @@ namespace Sercalo.TF
         /// <param name="value">The value.</param>
         /// <returns></returns>
         public async Task<bool> SetPowerMode(PowerMode powerMode)
-            => await this.SetByte("POW", (byte)powerMode);
+            => await this.SetValue("POW", (byte)powerMode);
 
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace Sercalo.TF
         /// </summary>
         /// <returns></returns>
         public async Task<ErrorMode> GetErrorMode()
-            => (ErrorMode)await this.GetByte("ERM");
+            => (ErrorMode)await this.GetValue<byte>("ERM");
 
         /// <summary>
         /// Sets the error mode.
@@ -97,14 +97,14 @@ namespace Sercalo.TF
         /// <param name="errorMode"></param>
         /// <returns></returns>
         public async Task<bool> SetErrorMode(ErrorMode errorMode)
-            => await this.SetByte("ERM", (byte)errorMode);
+            => await this.SetValue("ERM", (byte)errorMode);
 
         /// <summary>
         /// Gets the temperature of the microcontroller
         /// </summary>
         /// <returns></returns>
         public async Task<double> GetTemperature()
-            => await this.GetDouble("TMP");
+            => await this.GetValue<double>("TMP");
 
         /// <summary>
         /// Gets the uart baud rate.
@@ -113,7 +113,7 @@ namespace Sercalo.TF
         /// <exception cref="Sercalo.TF.TunableFilterException">Uart value out of range</exception>
         public async Task<int> GetUARTBaudRate()
         {
-            byte uartId = await this.GetByte("UART");
+            byte uartId = await this.GetValue<byte>("UART");
 
             if (uartId >= uartValues.Length)
                 throw new TunableFilterException("Uart value out of range");
@@ -163,7 +163,7 @@ namespace Sercalo.TF
         /// <exception cref="Sercalo.TF.TunableFilterException">Uart parity out of range</exception>
         public async Task<Parity> GetUARTParity()
         {
-            byte parityId = await this.GetByte("PTY");
+            byte parityId = await this.GetValue<byte>("PTY");
 
             if (parityId >= uartParities.Length)
                 throw new TunableFilterException("Uart parity out of range");
@@ -205,7 +205,7 @@ namespace Sercalo.TF
         /// </summary>
         /// <returns></returns>
         public async Task<byte> GetI2CAddress()
-            => await this.GetByte("IIC");
+            => await this.GetValue<byte>("IIC");
 
         /// <summary>
         /// Sets the address for SMBus/I2C.
@@ -213,7 +213,7 @@ namespace Sercalo.TF
         /// <param name="address">The address.</param>
         /// <returns></returns>
         public async Task<bool> SetI2CAddress(byte address)
-            => await this.SetByte("IIC", address);
+            => await this.SetValue("IIC", address);
 
         /// <summary>
         /// Gets the current position of the MEMS mirror
@@ -244,7 +244,7 @@ namespace Sercalo.TF
         /// <param name="channel"></param>
         /// <returns></returns>
         public async Task<bool> SetChannel(byte channel)
-            => await this.SetByte("CHSET", channel);
+            => await this.SetValue("CHSET", channel);
 
         /// <summary>
         /// Sets the specified user-defined channel position (i.e. modify)
@@ -260,7 +260,7 @@ namespace Sercalo.TF
         /// </summary>
         /// <returns></returns>
         public async Task<double> GetWavelength()
-            => await this.GetDouble("WVL");
+            => await this.GetValue<double>("WVL");
 
         /// <summary>
         /// Sets the output wavelength.
@@ -269,7 +269,7 @@ namespace Sercalo.TF
         /// <returns></returns>
         public async Task<bool> SetWavelength(double wavelength)
         { 
-            bool result = await this.SetDouble("WVL", wavelength);
+            bool result = await this.SetValue("WVL", wavelength);
             Thread.Sleep(1);
             return result;
         }
@@ -279,14 +279,14 @@ namespace Sercalo.TF
         /// </summary>
         /// <returns></returns>
         public async Task<double> GetMinimumWavelength()
-            => await this.GetDouble("WVMIN");
+            => await this.GetValue<double>("WVMIN");
 
         /// <summary>
         /// Gets the maximum selectable wavelength.
         /// </summary>
         /// <returns></returns>
         public async Task<double> GetMaximumWavelength()
-            => await this.GetDouble("WVMAX");
+            => await this.GetValue<double>("WVMAX");
 
         #endregion
     }
